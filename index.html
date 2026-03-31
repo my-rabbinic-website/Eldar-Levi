@@ -127,6 +127,10 @@
             --gold-gradient: linear-gradient(135deg, #fcf6ba 0%, #bf953f 50%, #b38728 100%);
         }
 
+        html {
+            scroll-padding-top: 110px; /* מונע מהתפריט להסתיר תוכן בגלילה לעוגן */
+        }
+
         body {
             background-color: #030407;
             color: #fdfbf7;
@@ -207,6 +211,12 @@
             -webkit-backdrop-filter: blur(30px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
+            transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.5s ease, border-color 0.5s ease;
+        }
+        .glass-panel:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 35px 75px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+            border-color: rgba(191, 149, 63, 0.25);
         }
 
         /* Premium Input Fields */
@@ -217,8 +227,11 @@
             border-bottom: 1px solid rgba(255,255,255,0.2);
             color: white;
             padding: 1rem 0;
-            font-size: 1rem;
+            font-size: 16px; /* מונע זום אוטומטי מעצבן במכשירי אייפון */
             transition: all 0.3s ease;
+            appearance: none;
+            -webkit-appearance: none;
+            border-radius: 0;
         }
         @media (min-width: 768px) { .elite-input { font-size: 1.1rem; } }
         
@@ -261,15 +274,19 @@
         .reveal-frame::after {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: #bf953f; transform: translateX(-101%);
-            transition: transform 1s cubic-bezier(0.77, 0, 0.175, 1); z-index: 2;
+            transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1); z-index: 2;
         }
         .reveal-frame.aos-animate::after { transform: translateX(101%); }
 
         /* Native Details Accordion styling */
-        details > summary { list-style: none; cursor: pointer; }
+        details { overflow: hidden; }
+        details > summary { list-style: none; cursor: pointer; user-select: none; }
         details > summary::-webkit-details-marker { display: none; }
-        details[open] summary ~ * { animation: fadeIn 0.5s ease-in-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        details[open] summary ~ * { animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideDown { 
+            from { opacity: 0; transform: translateY(-15px); max-height: 0; } 
+            to { opacity: 1; transform: translateY(0); max-height: 600px; } 
+        }
 
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 5px; }
@@ -286,8 +303,8 @@
     <div id="progress-bar" class="fixed top-0 left-0 h-[3px] bg-gold-500 z-[9999] w-0 transition-all duration-300"></div>
 
     <!-- WhatsApp Floating Action -->
-    <a href="https://wa.me/972528219928" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 left-6 md:bottom-10 md:left-10 z-50 bg-[#25D366] text-white p-4 md:p-5 rounded-full shadow-[0_20px_40px_rgba(37,211,102,0.3)] hover:scale-110 active:scale-95 transition-all group overflow-hidden" aria-label="שלח הודעת וואטסאפ">
-        <span class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-500"></span>
+    <a href="https://wa.me/972528219928" target="_blank" rel="noopener noreferrer" class="fixed bottom-6 left-6 md:bottom-10 md:left-10 z-[2000] bg-[#25D366] text-white p-4 md:p-5 rounded-full shadow-[0_15px_30px_rgba(37,211,102,0.3)] hover:shadow-[0_20px_40px_rgba(37,211,102,0.5)] hover:scale-110 active:scale-95 transition-all duration-300 group overflow-hidden flex items-center justify-center" aria-label="שלח הודעת וואטסאפ">
+        <span class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></span>
         <svg class="w-7 h-7 md:w-8 md:h-8 relative z-10" fill="currentColor" viewBox="0 0 24 24"><path d="M12.01 2.002c-5.514 0-9.998 4.484-9.998 9.998 0 1.764.453 3.42 1.258 4.887L1.936 21.92l5.165-1.312c1.432.76 3.036 1.187 4.73 1.187 5.513 0 9.998-4.484 9.998-9.998S17.523 2.002 12.01 2.002zM12.01 19.96c-1.492 0-2.912-.384-4.168-1.07l-2.996.76.788-2.88c-.742-1.282-1.166-2.76-1.166-4.333 0-4.636 3.77-8.406 8.406-8.406 4.637 0 8.406 3.77 8.406 8.406s-3.77 8.406-8.406 8.406zm4.568-6.17c-.25-.125-1.48-.73-1.71-.814-.23-.083-.396-.125-.563.125-.167.25-.646.814-.792.98-.146.167-.292.188-.542.063-.25-.125-1.056-.39-2.01-1.24-.742-.662-1.24-1.48-1.387-1.73-.146-.25-.016-.385.11-.51.112-.11.25-.292.375-.438.125-.146.167-.25.25-.417.083-.167.042-.313-.02-.438-.063-.125-.563-1.354-.77-1.854-.2-.49-.406-.424-.563-.432-.146-.008-.312-.008-.48-.008-.166 0-.437.063-.666.313-.23.25-.875.854-.875 2.083s.896 2.417 1.02 2.583c.125.167 1.76 2.688 4.26 3.77.596.257 1.06.41 1.424.526.598.19 1.14.163 1.566.1.472-.07 1.48-.604 1.688-1.188.208-.583.208-1.083.146-1.188-.063-.104-.23-.167-.48-.292z"/></svg>
     </a>
 
@@ -326,14 +343,14 @@
     </header>
 
     <!-- Mobile Navigation Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 z-[1500] bg-navy-950 translate-x-full transition-transform duration-700 flex flex-col items-center justify-center gap-8 md:gap-10">
-        <button id="menu-close" class="absolute top-6 left-6 md:top-10 md:left-10 text-gold-500/30 hover:text-gold-500 transition-colors p-2" aria-label="סגור תפריט ניווט">
-            <svg class="w-12 h-12 md:w-16 md:h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="0.5" d="M6 18L18 6M6 6l12 12"></path></svg>
+    <div id="mobile-menu" class="fixed inset-0 z-[1500] bg-navy-950/90 backdrop-blur-2xl translate-x-full transition-transform duration-700 flex flex-col items-center justify-center gap-10 md:gap-12">
+        <button id="menu-close" class="absolute top-6 left-6 md:top-10 md:left-10 text-gold-500/50 hover:text-gold-500 hover:rotate-90 transition-all duration-500 p-3" aria-label="סגור תפריט ניווט">
+            <svg class="w-10 h-10 md:w-12 md:h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
-        <a href="#about" class="font-serif text-4xl md:text-5xl text-white/90 mobile-link hover:text-gold-400 tracking-tighter">החזון</a>
-        <a href="#specialties" class="font-serif text-4xl md:text-5xl text-white/90 mobile-link hover:text-gold-400 tracking-tighter">מומחיות</a>
-        <a href="#faq" class="font-serif text-4xl md:text-5xl text-white/90 mobile-link hover:text-gold-400 tracking-tighter">מידע</a>
-        <a href="#contact" class="text-gold-500 text-xl md:text-2xl font-black mobile-link border-b-2 border-gold-500 pb-2 mt-4" dir="ltr">052-8219928</a>
+        <a href="#about" class="font-serif text-4xl md:text-5xl text-white/90 mobile-link hover:text-gold-400 hover:scale-105 transition-all tracking-tighter">החזון</a>
+        <a href="#specialties" class="font-serif text-4xl md:text-5xl text-white/90 mobile-link hover:text-gold-400 hover:scale-105 transition-all tracking-tighter">מומחיות</a>
+        <a href="#faq" class="font-serif text-4xl md:text-5xl text-white/90 mobile-link hover:text-gold-400 hover:scale-105 transition-all tracking-tighter">מידע</a>
+        <a href="#contact" class="text-gold-500 text-xl md:text-2xl font-black mobile-link border-b border-gold-500/30 hover:border-gold-500 pb-2 mt-6 transition-colors" dir="ltr">052-8219928</a>
     </div>
 
     <main class="relative z-10">
@@ -355,15 +372,15 @@
                     
                     <h1 class="font-serif text-fluid-h1 text-white mb-8 md:mb-14 font-light leading-[1.1] md:leading-[0.9]">
                         אסטרטגיה חכמה. <br>
-                        <span class="text-gold-foil italic font-medium block mt-2 md:mt-6">ניצחון בדין.</span>
+                        <span class="text-gold-foil italic font-medium block mt-3 md:mt-6">ניצחון בדין.</span>
                     </h1>
                     
-                    <div class="grid lg:grid-cols-2 gap-10 md:gap-20 items-end">
-                        <div class="font-sans text-fluid-p text-slate-400 font-light pr-6 md:pr-12 border-r-[1px] border-gold-600/20 leading-relaxed">
+                    <div class="grid lg:grid-cols-2 gap-8 md:gap-20 items-end">
+                        <div class="font-sans text-fluid-p text-slate-300 font-light pr-5 md:pr-12 border-r-[2px] border-gold-600/30 leading-relaxed md:leading-loose">
                             מומחיות בייצוג מורכב בבתי הדין הרבניים. ליווי משפטי המשלב חדות ליטיגטורית עם עומק הלכתי נדיר, להשגת התוצאה המדוייקת ביותר עבורך.
                         </div>
-                        <div class="flex flex-col sm:flex-row gap-6 md:gap-8 mt-4 lg:mt-0">
-                            <a href="#contact" class="btn-gold-elite inline-flex items-center justify-center gap-4 md:gap-8 px-8 md:px-16 py-5 md:py-7 font-black text-xs md:text-sm uppercase tracking-widest w-full sm:w-auto">
+                        <div class="flex flex-col sm:flex-row gap-5 md:gap-8 mt-6 lg:mt-0">
+                            <a href="#contact" class="btn-gold-elite inline-flex items-center justify-center gap-4 md:gap-8 px-8 md:px-16 py-5 md:py-7 font-black text-xs md:text-sm uppercase tracking-widest w-full sm:w-auto shadow-lg shadow-gold-500/10 hover:shadow-gold-500/30">
                                 <span>לתיאום פגישה</span>
                                 <svg class="w-4 h-4 md:w-5 md:h-5 transform -rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </a>
